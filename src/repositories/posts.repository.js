@@ -13,3 +13,8 @@ export async function createPostWithDescription(data) {
 
     return db.query(`INSERT INTO "posts" (photo, description,"userId") VALUES ($1, $2, $3)`, [photo, description, userId]);
 }
+
+export async function getPosts(userId) {
+    return db.query(`SELECT photo, description, "postedAt", "likesCount" FROM
+                     posts WHERE "userId"=$1`, [userId]);
+}

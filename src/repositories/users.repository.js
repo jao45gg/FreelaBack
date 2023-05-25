@@ -42,3 +42,8 @@ export async function registerNewToken(session) {
 
     return db.query(`INSERT INTO "tokens" ("userId", token) VALUES ($1, $2)`, [userId, token]);
 }
+
+export async function getUser(userId) {
+
+    return db.query(`SELECT name, photo, biography FROM users WHERE id=$1`, [userId]);
+}
