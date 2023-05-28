@@ -1,4 +1,4 @@
-import { follow, followers } from "../repositories/followers.repository.js";
+import { follow, followers, follows } from "../repositories/followers.repository.js";
 import { getUser } from "../repositories/users.repository.js";
 
 export async function followUser(req, res) {
@@ -23,10 +23,10 @@ export async function getFollowers(req, res) {
         const userData = await getUser(userId);
         if (userData.rowCount <= 0) return res.sendStatus(422);
 
-        const userFollowers = await followers(userId);
+        const userFollows = await follows(userId);
 
-        const data = userFollowers.rows.map(f => {
-            return f.follower
+        const data = userFollows.rows.map(f => {
+            return f.follows
         })
 
         res.send(data);
