@@ -60,9 +60,10 @@ export async function signIn(req, res) {
 export async function getUserById(req, res) {
     try {
 
-        const userId = res.locals.session.userId;
+        const { userId } = req.params;
 
         const userData = await getUser(userId);
+        if (userData.rowCount <= 0) return res.sendStatus(404);
         const postsData = await getPosts(userId);
 
         const data = {
