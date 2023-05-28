@@ -1,4 +1,4 @@
-import { createPost, createPostWithDescription, getPosts } from "../repositories/posts.repository.js";
+import { createPost, createPostWithDescription } from "../repositories/posts.repository.js";
 
 export async function newPost(req, res) {
     try {
@@ -10,7 +10,6 @@ export async function newPost(req, res) {
             await createPostWithDescription(data);
         } else
             await createPost(data);
-
 
         res.sendStatus(201);
     } catch (err) {

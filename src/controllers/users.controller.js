@@ -9,7 +9,7 @@ export async function signUp(req, res) {
         if (password !== confirmPassword) return res.sendStatus(422);
 
         const isEmailValid = await checkEmail(email);
-        if (isEmailValid.rowCount > 0) return res.sendStatus(409);
+        if (isEmailValid.rowCount > 0) return res.sendStatus(401);
 
         let user = {
             name,
@@ -38,10 +38,11 @@ export async function signUp(req, res) {
 
 export async function signIn(req, res) {
     try {
-        const { email, password } = req.body;
 
-        const user = await checkEmail(email);
-        if (user.rowCount <= 0) return res.sendStatus(401);
+        const { password } = req.body;
+
+        const user = res.locals.user;
+
         const correctPassword = bcrypt.compareSync(password, user.rows[0].password);
         if (!correctPassword) return res.sendStatus(401);
 
@@ -62,8 +63,28 @@ export async function getUserById(req, res) {
 
         const { userId } = req.params;
 
-        const userData = await getUser(userId);
-        if (userData.rowCount <= 0) return res.sendStatus(404);
+        const userData = res.locals.userData;
+        const postsData = await getPosts(userId);
+
+        const data = {
+            name: userData.name,
+            photo: userData.photo,
+            biography: userData.biography,
+            posts: postsData.rows
+        }
+
+        res.send(data);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+export async function getUsers(req, res) {
+    try {
+
+        const { userId } = req.params;
+
+        const userData = res.locals.userData;
         const postsData = await getPosts(userId);
 
         const data = {

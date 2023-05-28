@@ -1,12 +1,14 @@
-import { follow, followers, follows } from "../repositories/followers.repository.js";
+import { checkFollows, follow, followers, follows } from "../repositories/followers.repository.js";
 import { getUser } from "../repositories/users.repository.js";
 
 export async function followUser(req, res) {
     try {
 
         const { userId } = req.params;
-        const userData = await getUser(userId);
-        if (userData.rowCount <= 0) return res.sendStatus(404);
+        if(res.locals.session.userId == userId) return res.sendStatus(422);
+
+        const isValid = await checkFollows(res.locals.session.userId, userId);
+        if (isValid.rowCount > 0) return res.sendStatus(422);
 
         await follow(res.locals.session.userId, userId);
         res.sendStatus(204);
@@ -16,12 +18,10 @@ export async function followUser(req, res) {
     }
 }
 
-export async function getFollowers(req, res) {
+export async function getFollows(req, res) {
     try {
 
         const { userId } = req.params;
-        const userData = await getUser(userId);
-        if (userData.rowCount <= 0) return res.sendStatus(422);
 
         const userFollows = await follows(userId);
 
@@ -35,12 +35,10 @@ export async function getFollowers(req, res) {
     }
 }
 
-export async function getFollows(req, res) {
+export async function getFollowers(req, res) {
     try {
 
         const { userId } = req.params;
-        const userData = await getUser(userId);
-        if (userData.rowCount <= 0) return res.sendStatus(422);
 
         const userFollowers = await followers(userId);
 
