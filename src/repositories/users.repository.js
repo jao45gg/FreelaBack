@@ -46,3 +46,7 @@ export async function registerNewToken(session) {
 export async function getUser(userId) {
     return db.query(`SELECT name, photo, biography FROM users WHERE id=$1`, [userId]);
 }
+
+export async function getAllUsers() {
+    return db.query(`SELECT id, name, photo, biography FROM users`);
+}

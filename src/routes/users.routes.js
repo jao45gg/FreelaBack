@@ -12,6 +12,6 @@ const userRouter = Router();
 userRouter.post("/signup", validateSchema(signUpSchema), signUp);
 userRouter.post("/signin", validateSchema(signInSchema), checkEmailMiddleware, signIn);
 userRouter.get("/user/:userId", authValidation, checkUser, getUserById);
-userRouter.get("/users", authValidation, checkUser, getUsers);
+userRouter.get("/users", authValidation, getUsers);
 
 export default userRouter;

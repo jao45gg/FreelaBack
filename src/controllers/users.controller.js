@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
-import { registerNewCompleteUser, registerNewUserWithBiography, registerNewUserWithFoto, registerNewUser, registerNewToken, checkEmail, getUser } from "../repositories/users.repository.js";
+import { registerNewCompleteUser, registerNewUserWithBiography, registerNewUserWithFoto, registerNewUser, registerNewToken, checkEmail, getUser, getAllUsers } from "../repositories/users.repository.js";
 import { getPosts } from "../repositories/posts.repository.js";
 
 export async function signUp(req, res) {
@@ -81,20 +81,8 @@ export async function getUserById(req, res) {
 
 export async function getUsers(req, res) {
     try {
-
-        const { userId } = req.params;
-
-        const userData = res.locals.userData;
-        const postsData = await getPosts(userId);
-
-        const data = {
-            name: userData.rows[0].name,
-            photo: userData.rows[0].photo,
-            biography: userData.rows[0].biography,
-            posts: postsData.rows
-        }
-
-        res.send(data);
+        const users = await getAllUsers();
+        res.send(users.rows);
     } catch (err) {
         res.status(500).send(err.message);
     }
